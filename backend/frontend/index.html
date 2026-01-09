@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>HB Signals AI VIP</title>
+<style>
+body {
+  background:#0e0e0e;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
+  text-align:center;
+  padding:40px;
+}
+input, button {
+  padding:10px;
+  margin:6px;
+}
+#app { display:none; }
+</style>
+</head>
+<body>
+
+<h1>📊 HB Signals AI VIP</h1>
+
+<div id="login">
+  <p>🔐 Área VIP</p>
+  <input type="password" id="vip" placeholder="Senha VIP">
+  <br>
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="app">
+  <input type="file" id="file">
+  <br>
+  <button onclick="analyze()">Analisar</button>
+  <div id="result"></div>
+</div>
+
+<script>
+let VIP_KEY = "";
+
+function login() {
+  VIP_KEY = document.getElementById("vip").value;
+  if (!VIP_KEY) {
+    alert("Digite a senha VIP");
+    return;
+  }
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}
+
+async function analyze() {
+  const f = document.getElementById("file").files[0];
+  if (!f) {
+    alert("Envie a imagem");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("file", f);
+
+  document.getElementById("result").innerText = "⏳ Analisando...";
+
+  const r = await fetch("https://SEU_BACKEND/predict", {
+    method: "POST",
+    headers: { "X-VIP-KEY": VIP_KEY },
+    body: fd
+  });
+
+  if (!r.ok) {
+    document.getElementById("result").innerText = "❌ Acesso negado";
+    return;
+  }
+
+  const d = await r.json();
+  document.getElementById("result").innerHTML =
+    `<h2>${d.signal}</h2><h3>🔥 SCORE ${d.score}%</h3>`;
+}
+</script>
+
+</body>
+</html>
