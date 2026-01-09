@@ -1,0 +1,6 @@
+hb-signals-ai-vip/
+├── backend/
+│   ├── main.py
+│   └── requirements.txt
+└── frontend/
+    └── index.html
